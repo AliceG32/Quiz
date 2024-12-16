@@ -1,9 +1,10 @@
 from flask import redirect, render_template, Flask
-from flask_login import LoginManager, logout_user, login_required
+from flask_login import login_user, LoginManager, logout_user, login_required, current_user
 
 from data_db import db_session
 from data_db.user import User
 from forms.RegisterForm import RegisterForm
+from forms.LoginForm import LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwwqrwqrg44t5gfdgfd'
@@ -24,12 +25,30 @@ def reset_user(user_id):
     del users_data[user_id]
 
 @app.route("/", methods=['GET'])
-def topics():    return redirect("/register")
+def topics():
+    if not current_user.is_authenticated:
+        return redirect("/register")
 
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).filter(User.id == user_id).first()
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            users_data[current_user.id] = {}
+            return redirect("/")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -53,6 +72,7 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         db_sess.close()
+        return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
 
 

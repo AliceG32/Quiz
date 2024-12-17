@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row alert alert-warning">
+    <div class="col">
+        <h1>Тема: {{ topic_text }}</h1>
+    </div>
+    <div class="col">
+        <div class="text-end">
+            <a type="button" class="btn btn-danger" href="/">Прервать опрос и вернуться к списку тем</a>
+        </div>
+    </div>
+</div>
+
+<h2>Вопрос {{ current_question_index }} из {{ total_questions }}</h2>
+<div class="col-md6 border rounded">
+    <form action="" method=post class="p-3 shadow-lg">
+            <legend>{{ question.text }}</legend>
+            {{ form.hidden_tag() }}
+            {% if question.is_radio() %}
+                {{ form.radioAnswers.label }} {{ form.radioAnswers(class_="list-unstyled") }}
+            {% else %}
+                {{ form.checkAnswers.label }} {{ form.checkAnswers(class_="list-unstyled") }}
+            {% endif %}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    </form>
+</div>
+{% endblock %}

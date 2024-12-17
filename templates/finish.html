@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row alert alert-warning">
+    <div class="col">
+        <h1>Тема: {{ topic_text }}</h1>
+    </div>
+</div>
+
+<div class="col-md6 border rounded p-3 m-3 shadow-lg">
+    <h2>Правильные ответы: {{ correct_answers_count }} из {{ answers_count }} ({{ correct_percent }}%)</h2>
+    {% if current_total_correct_answers != 0 and current_correct_answers != 0 %}
+    <h2>Ваш лучший результат по данной теме: {{ correct_answers_count_best }} из {{ answers_count_best }} ({{
+        correct_percent_best }}%)</h2>
+    {% endif %}
+    <h2>Ваш рейтинг: {{ rating }} из {{ rating_total }}</h2>
+    <a class="btn btn-primary" href="/" role="button">Вернуться к списку тем</a>
+</div>
+
+{% if links_count > 0 %}
+<div class="col-md6 border rounded p-3 m-3 shadow-lg">
+    <h3>Информация по теме:</h3>
+        {% for link in links %}
+            <div> <a href="{{ link.link }}" target="_blank">{{ link.text }}</a></div>
+        {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

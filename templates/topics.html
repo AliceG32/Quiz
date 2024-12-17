@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Выберите тему викторины</h2>
+<div class="col-md6 border rounded">
+{% for topic in topics %}
+    <ul>
+        <a href="topic/{{topic.id}}">{{topic.text}}</a>
+    </ul>
+{% endfor %}
+</div>
+{% endblock %}
